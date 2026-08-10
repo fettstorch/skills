@@ -1,4 +1,4 @@
-# jule-skills
+# skills
 
 Portable [Agent Skills](https://agentskills.io) — reusable workflow and behavior packs for AI coding agents (Claude Code, Codex, Copilot, Cursor, Gemini CLI, and other hosts that follow the open Agent Skills spec).
 
@@ -10,16 +10,16 @@ Requires GitHub CLI ≥ v2.90.0 (`gh skill` is a public preview).
 
 ```bash
 # Install one skill (interactive host + scope prompts)
-gh skill install fettstorch/jule-skills tdd
+gh skill install fettstorch/skills tdd
 
 # Install everything
-gh skill install fettstorch/jule-skills --all
+gh skill install fettstorch/skills --all
 
 # Pin to a tag or commit for reproducibility
-gh skill install fettstorch/jule-skills tdd --pin v1.0.0
+gh skill install fettstorch/skills tdd --pin v1.0.0
 ```
 
-Use `--agent` and `--scope` to control placement, or `--from-local ./jule-skills` to install from a clone.
+Use `--agent` and `--scope` to control placement, or `--from-local ./skills` to install from a clone.
 
 ## Skills
 
