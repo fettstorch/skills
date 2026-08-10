@@ -1,0 +1,6 @@
+interface:
+  display_name: "Operator"
+  short_description: "Manage interactive tasks and route their context"
+
+policy:
+  allow_implicit_invocation: false
