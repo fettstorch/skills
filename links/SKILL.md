@@ -1,11 +1,6 @@
 ---
 name: links
-description: >-
-  Verify that any URL/link is real before emitting it. Use whenever you are
-  about to include a link as a source in code comments, documentation, commit
-  messages, PR descriptions, or messages to the user, and that link did NOT
-  come directly from a web search / fetched result or is otherwise prone to
-  hallucination. Hallucinating links is preventable and unacceptable.
+description: Verify that any URL/link is real before emitting it. Use whenever you are about to include a link as a source in code comments, documentation, commit messages, PR descriptions, or messages to the user, and that link did NOT come directly from a web search / fetched result or is otherwise prone to hallucination. Hallucinating links is preventable and unacceptable.
 ---
 
 # Links: never hallucinate a URL
