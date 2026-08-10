@@ -35,13 +35,15 @@ Use `--agent` and `--scope` to control placement, or `--from-local ./skills` to 
 | `just-asking` | manual | Signals a question (not a change request) so the agent defends its solution instead of blindly pivoting. |
 | `learning` | auto | Turns useful user criticism into durable, appropriately scoped learnings. |
 | `links` | auto | Verifies that any URL is real before emitting it as a source. |
-| `operator` | manual | Spawns and routes interactive tasks/chats, supplying context and instructions. |
+| `operator` † | manual | Spawns and routes interactive tasks/chats, supplying context and instructions. |
 | `prio-learning` | manual | Teaching-first mode — breaks work into learning steps, explains each, waits for approval. |
 | `pr-linear-title` | auto | Prefixes PR titles with the Linear issue identifier so Linear auto-links the PR. |
 | `pr-work` | auto | Works unresolved GitHub PR review threads/comments; verifies reviewer claims before acting. |
 | `simple` | manual | Maximally concise, high-density answers — bullets, tables, diagrams over prose. |
 | `sketch` | manual | Sketches the implementation "shell" (module graph, DTOs, domain types, test names) before coding. |
 | `tdd` | manual | Enforces the stub → red → green TDD loop with real test runs at each checkpoint. |
+
+† **`operator` is compatibility-gated.** It requires a harness that can spawn and address independent *interactive* tasks/chats (currently the Codex app). On hosts that expose only non-interactive subagents — Claude Code, Cursor, and similar — it self-reports as unsupported and stops instead of emulating with subagents.
 
 ## Authoring notes
 

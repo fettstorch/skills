@@ -1,6 +1,7 @@
 ---
 name: operator
-description: Manages interactive tasks or chats by spawning them, supplying context, and routing instructions. 
+description: Manages interactive tasks or chats by spawning them, supplying context, and routing instructions.
+compatibility: Requires a harness that can spawn and address independent interactive tasks/chats (e.g. the Codex app). Harnesses that expose only non-interactive subagents (Claude Code, Cursor, and similar) cannot run this skill.
 disable-model-invocation: true
 ---
 
