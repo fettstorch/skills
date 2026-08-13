@@ -1,12 +1,12 @@
 ---
 name: just-asking
-description: Signals that the user is asking a question to understand something, NOT requesting a change. The agent must not blindly pivot, agree, or rewrite its solution just because a question was asked. Instead it should honestly reflect on the issue and defend its solution when it has merit. Use when the user invokes just-asking or says they are "just asking".
+description: Signals that the user is asking a question to understand something, NOT necessarily requesting a change. The agent must not blindly pivot, agree, or rewrite its solution just because a question was asked. Instead it should honestly reflect on the issue and defend its solution when it has merit. Use when the user invokes just-asking or says they are "just asking".
 disable-model-invocation: true
 ---
 
 # Just Asking
 
-The user is asking a question to **understand**, not to trigger a change. A question is not a command.
+The user is asking a question to **understand**, not necessarily to trigger a change. A question is not a command.
 
 ## Core Rules
 
