@@ -1,6 +1,7 @@
 ---
 name: learning
 description: Turns useful user criticism of an agent's coding, architecture, naming, or workflow decisions into durable, appropriately scoped learnings. Use when the user criticizes a decision, explains a better approach, states how a codebase normally handles something, or provides a convention that could prevent future mistakes.
+disable-model-invocation: true
 ---
 
 # Learning
