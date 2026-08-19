@@ -33,7 +33,7 @@ Use `--agent` and `--scope` to control placement, or `--from-local ./skills` to 
 | `handoff` | auto | Compacts the conversation into a handoff doc so a fresh session can continue the work. |
 | `interview-me` | auto | Interviews you about a plan/design, one high-impact question at a time, until shared understanding. |
 | `just-asking` | manual | Signals a question (not a change request) so the agent defends its solution instead of blindly pivoting. |
-| `learning` | auto | Turns useful user criticism into durable, appropriately scoped learnings. |
+| `learning` | manual | Turns useful user criticism into durable, appropriately scoped learnings. |
 | `links` | auto | Verifies that any URL is real before emitting it as a source. |
 | `operator` † | manual | Spawns and routes interactive tasks/chats, supplying context and instructions. |
 | `prio-learning` | manual | Teaching-first mode — breaks work into learning steps, explains each, waits for approval. |
