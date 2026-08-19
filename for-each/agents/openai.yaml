@@ -1,0 +1,6 @@
+interface:
+  display_name: "For Each"
+  short_description: "Apply one workflow to every listed subtask"
+  default_prompt: "Use $for-each to apply the requested workflow to every item in this task list."
+policy:
+  allow_implicit_invocation: false
