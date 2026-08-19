@@ -1,0 +1,6 @@
+interface:
+  display_name: "Step by Step"
+  short_description: "Complete one listed task, then wait"
+  default_prompt: "Use $step-by-step to work through this task list one item at a time."
+policy:
+  allow_implicit_invocation: false
