@@ -212,6 +212,32 @@ available. Never use only vague wording such as "the parent chat".
 
 Append the task-specific assignment and context sources after this fixed block.
 
+### Development workflow addendum (only when it fits the assignment)
+
+Do not prescribe the same development skill to every spawned task. For a task
+that will change code, choose a workflow from the assignment's actual uncertainty
+and scope:
+
+- **Sketch first** — use `$sketch` when a new feature or substantive behavior
+  needs user alignment on its module boundaries, interface or domain shape,
+  multi-module flow, test scope, or implementation slices before coding.
+- **TDD first** — use `$tdd` when a focused bug fix or small, well-bounded
+  behavior has a known expected outcome that can be captured in a failing
+  regression test. A bug fix does not need a sketch merely because it changes
+  code.
+- **Sketch, then TDD** — use both only when the task genuinely needs design
+  alignment first and test-driven implementation afterward. Require sketch
+  approval before beginning the TDD workflow.
+- **Neither** — do not force either skill onto research, operational work,
+  documentation-only changes, mechanical refactors, or development work that
+  would not benefit from those workflows.
+
+Feature versus bug is a useful signal, not a rigid classification: a small,
+well-specified feature may go directly to TDD, while a cross-cutting bug with an
+uncertain contract may need a sketch first. Include the selected skill and its
+ordering explicitly in the task-specific assignment. Do not include a workflow
+skill instruction when neither applies.
+
 ### Linear addendum (only when the task implements a Linear issue)
 
 When the task's assignment is implementing a specific Linear issue, also append:

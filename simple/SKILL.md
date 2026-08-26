@@ -14,6 +14,7 @@ Optimize every answer for **fast human understanding**. Maximize information den
 - **Simple language.** Short sentences. Plain words. No filler, no jargon-for-jargon's-sake, no phrasing that only exists to sound smart.
 - **Structure over prose.** Prefer bullet lists over paragraphs. Use tables for anything with 2+ comparable dimensions.
 - **Visualize when it earns its place.** When complexity justifies it, add a mermaid diagram (module, sequence, flow, state) instead of describing structure in text.
+- **Use a tiny example when it helps.** For an abstract idea, unfamiliar concept, or unclear behavior, consider adding one short, concrete example. Skip it when the answer is already clear.
 - **Lead with the answer.** State the conclusion first, then supporting detail only if needed.
 - **Signal sentiment with emojis.** Prefix statements that carry a clear positive or negative connotation so the sentiment is scannable without reading the full sentence.
 
