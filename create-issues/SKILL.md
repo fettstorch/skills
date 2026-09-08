@@ -23,9 +23,9 @@ Issues describe **what** should be observably true when the work is done and **w
 3. Determine whether the user requested planning or execution. A clear imperative to create or update Linear issues or spawn tasks is authorization to perform those requested actions; do not add a redundant approval stop. Authorization does not create unavailable capabilities: spawn an independent interactive task only when the harness supports it; otherwise report that limitation clearly and never substitute a non-interactive subagent. Requests to plan, draft, suggest, or decompose call for review before Linear creation. Explicit user instructions override these defaults.
 4. Resolve only missing decisions that would materially change scope, metadata, dependencies, or risk. Infer routine details from established context. When relevant, inspect matching teams, labels, projects, and milestones and suggest or select fitting existing metadata; ask a focused question only when a consequential choice cannot be inferred safely.
 5. For planning requests, present a concise review plan and ask for feedback on the material choices. For an authorized execution request, a preview may aid clarity but is not an approval gate.
-6. Before creating issues, expand the selected drafts into standalone Linear descriptions. Assignees should not need the original spec, plan, or thread to understand the problem, constraints, desired behavior, blockers, and verification.
-7. Once creation is authorized by the user's original instruction or later approval, create blockers first, then dependents, so blocked-by relations can reference existing issue IDs.
-8. Return created issue IDs and a compact dependency/project summary.
+6. For an identified existing issue, fetch it and apply only the requested or approved changes, preserving unspecified fields and relations. For new issues, expand the selected drafts into standalone Linear descriptions; assignees should not need the original spec, plan, or thread to understand the problem, constraints, desired behavior, blockers, and verification.
+7. Once creation is authorized by the user's original instruction or later approval, create blockers first, then dependents, so blocked-by relations can reference existing issue IDs. Do not use this creation path for an identified existing issue.
+8. Return the created or updated issue IDs and a compact dependency/project summary.
 
 ## Issue Rules
 
@@ -83,9 +83,11 @@ Dependency order:
 Please confirm team, project/milestones, scope, granularity, delivery order/waves, final-description depth, labels, priorities, and Async grading.
 ```
 
-## Linear Creation
+## Linear Mutation
 
-Use the connected Linear integration once creation is authorized. If unavailable, discover or load it first, or ask the user to enable it.
+Use the connected Linear integration once the requested mutation is authorized. If unavailable, discover or load it first, or ask the user to enable it.
+
+For an update, fetch the identified issue first, change only the requested or approved content or metadata, and preserve everything else unless the user explicitly requests replacement.
 
 Create issues in dependency order. Apply the confirmed team, project, milestone, priority, `Async` label, and fitting Area/Game labels. Use existing labels/projects/milestones when selected; create new projects/milestones only when explicitly approved and supported by the integration. Add blocked-by relations with created issue IDs; if the tools cannot create relations, include blocker IDs in the dependent issue description and report the limitation.
 
