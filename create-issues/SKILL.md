@@ -1,5 +1,5 @@
 ---
-description: Convert a plan, spec, product request, or thread context into reviewed vertical-slice Linear issues with broad, abstract requirements instead of predefined implementation details. Use when asked to break down work, create Linear issues from a plan, split a spec into tickets, or plan Linear team/project/label/milestone metadata.
+description: Convert a plan, spec, product request, or thread context into reviewed vertical-slice Linear issues with broad, abstract requirements instead of predefined implementation details. Use when asked to break down work, create or update Linear issues, split a spec into tickets, plan Linear metadata, or spawn implementation tasks from issues.
 name: create-issues
 ---
 # Create Issues
