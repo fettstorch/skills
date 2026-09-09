@@ -42,6 +42,7 @@ Use `--agent` and `--scope` to control placement, or `--from-local ./skills` to 
 | `pr-work` | auto | Works unresolved GitHub PR review threads/comments; verifies reviewer claims before acting. |
 | `simple` | manual | Maximally concise, high-density answers — bullets, tables, diagrams over prose. |
 | `sketch` | manual | Sketches the implementation "shell" (module graph, DTOs, domain types, test names) before coding. |
+| `setup-gitbutler` | manual | Sets up parallel agents to resolve their lane and immediately assign only owned changes to it. |
 | `tdd` | manual | Enforces the stub → red → green TDD loop with real test runs at each checkpoint. |
 
 † **`operator` is compatibility-gated.** It requires a harness that can spawn and address independent *interactive* tasks/chats (currently the Codex app). On hosts that expose only non-interactive subagents — Claude Code, Cursor, and similar — it self-reports as unsupported and stops instead of emulating with subagents.

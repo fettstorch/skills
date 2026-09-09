@@ -1,0 +1,6 @@
+interface:
+  display_name: "Set Up GitButler"
+  short_description: "Set up lane-safe parallel GitButler work"
+  default_prompt: "Use $setup-gitbutler to make this repository safe for parallel agents by having each agent resolve its lane and immediately assign only its owned changes to it."
+policy:
+  allow_implicit_invocation: false
