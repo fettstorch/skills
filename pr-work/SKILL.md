@@ -132,7 +132,12 @@ When listing them, include:
 >
 > **If you skip waiting for approval, you are violating the user's trust and autonomy.**
 
-When the PR is found/given, list **only sources that contain actionable feedback** as concise, continuously-numbered markdown tables: (1) all UNRESOLVED review threads, (2) actionable PR review summaries, and (3) PR (issue) comments that look like questions or actionable feedback. Numbering is **continuous across the listed sections** so the user can refer back unambiguously (e.g. "fix 1, 3, 5"). Do **not** render a table, placeholder row, or "—" row for a source with no actionable rows. Instead, add one short sentence after the tables naming which sources were checked and had no actionable items.
+When the PR is found/given, combine actionable feedback from all sources—UNRESOLVED review threads, actionable PR review summaries, and PR (issue) comments that look like questions or actionable feedback—and classify each item by the judgment needed to address it:
+
+- **No-brainers**: trivial, low-risk, self-explanatory changes with one clear solution, such as renames, typos, formatting, or obvious one-liners.
+- **Needs attention**: items involving ambiguity, verification concerns, design trade-offs, multiple viable approaches, cross-cutting changes, or behavioral/architectural impact.
+
+Present the result as **up to two concise markdown tables**, one per non-empty category. Omit an empty category entirely. Do not mention empty sources or categories, and do not emit messages such as "no actionable PR comments" or "nothing to address." If there are no actionable items at all, emit no findings/status output. Numbering is **continuous across both tables** so the user can refer back unambiguously (e.g. "fix 1, 3, 5").
 
 Each row MUST include a verification status column with one of `verified` / `contradicted` / `unverified` (or a hyphenated nuance such as `verified-but-debatable`). For any status other than a clean `verified`, follow the table with a short bullet directly below it (`- #N — <reason>`) explaining why — keep the table itself compact.
 
@@ -140,46 +145,39 @@ Do **not** include raw GitHub node IDs, thread IDs, root comment IDs, review IDs
 
 **Example layout:**
 
-**Unresolved review threads:**
+**No-brainers:**
 
-| # | File:line | Topic | Status |
+| # | Location/source | Topic | Status |
 |---|---|---|---|
 | 1 | `baz.ts:42` | rename `foo` → `bar` | `verified` |
-| 2 | `foo.ts:22-44` | clarify what these lines do | `verified` |
+| 2 | PR comment | fix a typo in the README | `verified` |
 
-**PR review summaries:**
+**Needs attention:**
 
-| # | State | Topic | Status |
+| # | Location/source | Topic | Status |
 |---|---|---|---|
-| 3 | COMMENTED | pinned SHA looks like a tag object, not a commit SHA | `unverified` |
+| 3 | review summary | pinned SHA looks like a tag object, not a commit SHA | `unverified` |
+| 4 | `Dockerfile:18` | does this `chown` affect the host? | `verified-but-debatable` |
 
 - #3 — needs `git`/GitHub verification before treating as actionable
+- #4 — behavior is verified, but whether to change it depends on the intended ownership model
 
-**PR comments:**
+### Advising conceptual fixes for items that need attention
 
-| # | Topic | Status |
-|---|---|---|
-| 4 | does the Dockerfile chown affect the host? | `verified` |
-| 5 | claims Dependabot alerts aren't generated for SHA-pinned actions | `verified` |
-
-- #5 — supported by [GitHub docs](https://docs.github.com/...)
-
-### Advising conceptual fixes for non-trivial issues
-
-After the tables (and their status bullets), add a short **Suggested approach** section that proposes a conceptual fix **only for the non-trivial issues**. The goal is to give the user enough to decide *what* to fix and *how* before any code is written.
+After the tables (and their status bullets), add a short **Suggested approach** section that proposes a conceptual fix **only for items in Needs attention**. The goal is to give the user enough to decide *what* to fix and *how* before any code is written. Omit the section when the Needs attention category is empty.
 
 - **Skip the trivial ones.** Issues like renames, typos, formatting, obvious one-liners, or self-explanatory requests need no advice — do not add noise for them.
-- **Cover the non-trivial ones**: anything involving design trade-offs, multiple viable approaches, cross-cutting changes, behavioral/architectural impact, or where the reviewer's claim was `contradicted` / `unverified` / `verified-but-debatable`.
+- **Cover Needs attention items**: anything involving design trade-offs, multiple viable approaches, cross-cutting changes, behavioral/architectural impact, or where the reviewer's claim was `contradicted` / `unverified` / `verified-but-debatable`.
 - Keep each suggestion **concise and conceptual** — describe the approach, key files/areas touched, and trade-offs or open questions. Do **not** write the full implementation here; this is pre-implementation advice, not Step A.
 - If an item is `contradicted` or debatable, state the correct behavior (with the doc link/evidence) and recommend whether to fix, push back, or decline.
 - If a non-trivial issue has more than one reasonable approach, list the options briefly and name your recommendation.
 
 **Example layout:**
 
-**Suggested approach (non-trivial issues):**
+**Suggested approach (needs attention):**
 
-- **#2** — clarify lines 22–44: extract into a named helper (`computeFoo`) so intent is obvious; no behavior change. Touches `foo.ts` only.
 - **#3** — pinned SHA: research says the ref *is* a valid commit SHA (`contradicted`). Recommend replying with the evidence and declining rather than changing the pin.
+- **#4** — ownership behavior: confirm whether container-only ownership is intended before changing the `Dockerfile`; if it is, reply with evidence instead of modifying it.
 
 This advice still respects the approval gate — it informs the user's selection but does **not** authorize implementation.
 
@@ -337,7 +335,7 @@ After the selected fixes are pushed (or when there is nothing left to fix right 
 **When monitoring, react to:**
 
 - **Failing CI** → investigate the failing check(s), fix the cause, and go through the normal per-issue flow (Step A implement & verify → wait for approval → Step B commit + push). Do not auto-commit CI fixes without approval; the approval gate still applies.
-- **New/unresolved review comments** (threads, PR comments, review summaries) → re-run the intake/verification pass, present the new items as a continuously-numbered table (same rules as above), and let the user select what to fix.
+- **New/unresolved review comments** (threads, PR comments, review summaries) → re-run the intake/verification pass, present the new items in up to two continuously-numbered category tables (same rules as above), and let the user select what to fix.
 
 **Monitoring is done (stop the loop) when ALL of:**
 
