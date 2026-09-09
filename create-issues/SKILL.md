@@ -1,5 +1,5 @@
 ---
-description: Convert a plan, spec, product request, or thread context into reviewed vertical-slice Linear issues with broad, abstract requirements instead of predefined implementation details. Use when asked to break down work, create Linear issues from a plan, split a spec into tickets, or plan Linear team/project/label/milestone metadata.
+description: Convert a plan, spec, product request, or thread context into reviewed vertical-slice Linear issues with broad, abstract requirements instead of predefined implementation details. Use when asked to break down work, create or update Linear issues, split a spec into tickets, plan Linear metadata, or spawn implementation tasks from issues.
 name: create-issues
 ---
 # Create Issues
@@ -12,7 +12,7 @@ Issues describe **what** should be observably true when the work is done and **w
 
 - State requirements as broad, abstract, behavior-focused outcomes plus constraints and exclusions.
 - Do not prescribe modules, types, contracts, migrations, function signatures, or affected files in issue descriptions.
-- The implementation shape is designed at development time: the assignee must explicitly invoke the `$sketch` skill before coding. Task prompts must say to read and follow the installed skill file (for example, `/Users/julian/.cursor/skills/sketch/SKILL.md`), rather than merely asking for a “sketch”. The skill’s module graph, DTOs, domain types, and test plan are the required deliverable; the assignee then waits for user approval. Issues may point assignees to that skill, but must not pre-produce its output.
+- The implementation shape is designed at development time: the assignee must explicitly invoke the `$sketch` skill before coding. Task prompts must say to read and follow the installed skill file (for example, `/Users/julian/.cursor/skills/sketch/SKILL.md`), rather than merely asking for a “sketch”. The skill’s module graph, DTOs, domain types, and test plan are the required deliverable; when that implementation workflow requires approval, the assignee waits after presenting the Sketch. This gate belongs to the spawned implementation task, not to an operator already authorized to create its Linear issue or spawn it. Issues may point assignees to that skill, but must not pre-produce its output.
 - For Word Blitz client task prompts, make manual verification the default. Automated tests belong only to introduced or altered general-purpose utility logic; do not require component, integration, or end-to-end tests merely because the `sketch` template includes a Test Plan section. If no such utility logic exists, ask the assignee to state that no automated test files are planned and provide a concise manual verification checklist instead.
 - When two issues need a shared interface, name the boundary abstractly ("exposes the created foo's identifier to clients") and designate the blocking issue as the source of truth. Never spell out the concrete contract in multiple issues.
 
@@ -20,12 +20,12 @@ Issues describe **what** should be observably true when the work is done and **w
 
 1. Gather the durable context issue assignees will need: goal, motivation, constraints, existing plan, dependencies, exclusions, and verification expectations. Capture the problem and desired behavior — not how the current codebase would implement it.
 2. Identify shared groundwork before drafting slices. Extract a groundwork issue only when it unlocks multiple slices or establishes a shared boundary, and describe it by the capability it provides, not by its technical design.
-3. Draft issues before creating anything in Linear. Suggest a target team when inferable; otherwise ask. If Linear context is available, inspect matching teams, labels, projects, and milestones before the draft.
-4. Ask whether the issues should belong to a Linear project. Suggest an existing project when one fits, or a new project name when the work is coherent but no project fits. If project-scoped and there are more than a few issues, suggest existing or new milestones.
-5. Present a concise review plan and ask for feedback on scope, granularity, dependencies, delivery order/waves, groundwork coverage, final-description depth, `Async` grading, team, project, milestones, labels, and priorities.
-6. Before creating issues, expand approved drafts into standalone Linear descriptions. Assignees should not need the original spec, plan, or thread to understand the problem, constraints, desired behavior, blockers, and verification.
-7. Create Linear issues only after explicit user approval. Create blockers first, then dependents, so blocked-by relations can reference existing issue IDs.
-8. Return created issue IDs and a compact dependency/project summary.
+3. Determine whether the user requested planning or execution. A clear imperative to create or update Linear issues or spawn tasks is authorization to perform those requested actions; do not add a redundant approval stop. Authorization does not create unavailable capabilities: spawn an independent interactive task only when the harness supports it; otherwise report that limitation clearly and never substitute a non-interactive subagent. Requests to plan, draft, suggest, or decompose call for review before Linear creation. Explicit user instructions override these defaults.
+4. Resolve only missing decisions that would materially change scope, metadata, dependencies, or risk. Infer routine details from established context. When relevant, inspect matching teams, labels, projects, and milestones and suggest or select fitting existing metadata; ask a focused question only when a consequential choice cannot be inferred safely.
+5. For planning requests, present a concise review plan and ask for feedback on the material choices. For an authorized execution request, a preview may aid clarity but is not an approval gate.
+6. For an identified existing issue, fetch it and apply only the requested or approved changes, preserving unspecified fields and relations. For new issues, expand the selected drafts into standalone Linear descriptions; assignees should not need the original spec, plan, or thread to understand the problem, constraints, desired behavior, blockers, and verification.
+7. Once creation is authorized by the user's original instruction or later approval, create blockers first, then dependents, so blocked-by relations can reference existing issue IDs. Do not use this creation path for an identified existing issue.
+8. Return the created or updated issue IDs and a compact dependency/project summary.
 
 ## Issue Rules
 
@@ -83,10 +83,12 @@ Dependency order:
 Please confirm team, project/milestones, scope, granularity, delivery order/waves, final-description depth, labels, priorities, and Async grading.
 ```
 
-## Linear Creation
+## Linear Mutation
 
-Use the connected Linear integration after approval. If unavailable, discover or load it first, or ask the user to enable it.
+Use the connected Linear integration once the requested mutation is authorized. If unavailable, discover or load it first, or ask the user to enable it.
+
+For an update, fetch the identified issue first, change only the requested or approved content or metadata, and preserve everything else unless the user explicitly requests replacement.
 
 Create issues in dependency order. Apply the confirmed team, project, milestone, priority, `Async` label, and fitting Area/Game labels. Use existing labels/projects/milestones when selected; create new projects/milestones only when explicitly approved and supported by the integration. Add blocked-by relations with created issue IDs; if the tools cannot create relations, include blocker IDs in the dependent issue description and report the limitation.
 
-If user feedback materially changes scope, dependencies, Linear metadata, or `Async` grading, revise the draft and ask for confirmation again before creating issues.
+If the user gives material feedback to a draft, revise it and preserve that review gate before creating issues. Also wait when the user explicitly requests approval-gated creation. Do not introduce a new gate for routine inferred details or for an unchanged, already-authorized execution request.
