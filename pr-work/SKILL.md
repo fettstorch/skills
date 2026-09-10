@@ -208,7 +208,7 @@ This advice still respects the approval gate — it informs the user's selection
 **Important**: When reacting and replying to threads:
 
 - The **root comment** is always the FIRST comment in the `comments` array (index 0) - this is the comment that started the thread
-- Always react (:+1:) to the root comment to acknowledge the issue
+- React to the root comment to acknowledge the outcome: use :+1: for a fix and :-1: for a justified disagreement / won't-fix decision
 - Always reply to the **thread** (using `pullRequestReviewThreadId`) via `addPullRequestReviewThreadReply`, NOT to a specific comment and NOT via a review. This ensures your reply appears immediately in the existing thread conversation as an individual comment, not as an unsubmitted review comment.
 - Even if later comments in the thread provide more context or clarification, react to the root comment and reply to the thread
 - After a fix reply (e.g. `Fixed:` / `Behoben:`), **resolve the thread** when the commit fully addresses the feedback; skip resolve for partial, explanatory, or follow-up replies
@@ -257,7 +257,7 @@ Checkout the relevant branch once before the loop starts.
 1. Create a commit with a concise message starting with `REVIEW: ...` covering **only** this issue.
 2. Depending on the issue type:
 
-   **Review thread** — add a :+1: reaction to the root comment (first comment in the thread):
+   **Review thread** — react to the root comment (first comment in the thread). Use `THUMBS_UP` when fixing the issue and `THUMBS_DOWN` for a justified disagreement / won't-fix decision:
    ```bash
    gh api graphql -f query='
    mutation {
@@ -269,6 +269,7 @@ Checkout the relevant branch once before the loop starts.
      }
    }'
    ```
+   Replace `THUMBS_UP` with `THUMBS_DOWN` for a won't-fix reply.
    Then reply to the thread using `addPullRequestReviewThreadReply` — this posts an **individual comment** immediately. Do **NOT** use `addPullRequestReviewComment`, `gh pr review`, or any flow that opens a pending review that must be submitted:
    ```bash
    gh api graphql -f query='
@@ -296,10 +297,11 @@ Checkout the relevant branch once before the loop starts.
    ```
    - Do **not** resolve when the reply is explanatory only, asks a follow-up question, defers work, or does not fully address the feedback — **except** when the root comment author is an automated review bot (e.g. `chatgpt-codex-connector`, `copilot-pull-request-reviewer`, or any `login` ending in `[bot]`). For bot reviewers, a justified disagreement / won't-fix reply (e.g. `:robot: Won't fix: <reason>`) **may also resolve** the thread, since no human is waiting to confirm. For human reviewers, leave such declines unresolved.
 
-   **PR (issue) comment** — add a :+1: reaction:
+   **PR (issue) comment** — add a reaction. Use `THUMBS_UP` when fixing the issue and `THUMBS_DOWN` for a justified disagreement / won't-fix decision:
    ```bash
    gh api graphql -f query='mutation { addReaction(input: { subjectId: "COMMENT_ID", content: THUMBS_UP }) { reaction { content } } }'
    ```
+   Replace `THUMBS_UP` with `THUMBS_DOWN` for a won't-fix reply.
    Then add a new PR-level reply via REST:
    ```bash
    gh api repos/OWNER/REPO/issues/PR_NUMBER/comments -f body=':robot: [concise reply in same language as original]'
