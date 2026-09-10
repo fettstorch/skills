@@ -93,9 +93,8 @@ Infer decisions only when the repository gives clear, current evidence. Otherwis
 - which harnesses must work and whether any cannot support a desired capability;
 - which harnesses sandbox `.git` and which narrow GitButler commands may receive persistent approval;
 - how work ownership is assigned when agents share one checkout;
-- how a task maps to a lane when an issue ID is present or absent;
+- how a task maps to a lane when an issue ID is present, and any project-specific naming evidence for descriptive lanes when it is absent;
 - what counts as a coherent edit boundary for immediate lane assignment;
-- whether creating or selecting the task lane itself needs user confirmation when no unambiguous lane exists;
 - which actions beyond immediate assignment to the already-owned lane require approval;
 - which checks must pass, when they should run, and whether they modify files;
 - whether reminders or enforcement hooks are desired at all;
@@ -103,7 +102,9 @@ Infer decisions only when the repository gives clear, current evidence. Otherwis
 
 For verification specifically, show the user what was discovered and ask them to confirm the canonical pipeline, its normal trigger points, whether it intentionally mutates files, and whether any apparently relevant command should be excluded. If no established verifier is found, ask whether the setup should add one; do not invent a new verification pipeline automatically.
 
-Do not invent an issue tracker, naming scheme, stop hook, or verification command. Immediate assignment of owned changes to the owned lane is not an optional policy in this skill; determine how to realize it safely in this repository. If the owning lane cannot be determined, stop before editing and ask the user rather than creating ambiguous work.
+Do not invent an issue tracker, stop hook, or verification command. Immediate assignment of owned changes to the owned lane is not an optional policy in this skill; determine how to realize it safely in this repository.
+
+Lane creation is the normal resolution when no existing lane clearly owns the task. First inspect the applied and existing lanes and compare their purpose with the requested work. Reuse a lane when an issue ID, explicit user direction, prior task context, or strong semantic match makes ownership clear. When no lane clearly fits, create a new lane without asking the user merely to choose or approve it. Use the repository's established naming convention when one exists; otherwise choose a concise kebab-case name that describes the task. A supplied canonical issue ID remains the strongest naming guide and should be preserved in the lane name. Ask only when there is a genuine ownership conflict that naming a new independent lane would not resolve—for example, the task must continue one of several plausible existing lanes or the user has explicitly gated lane creation.
 
 ## Design the setup
 
@@ -139,7 +140,7 @@ The resulting section must:
 
 - state how to detect GitButler workspace mode and remain inactive outside it;
 - direct version-control writes through `but` while still allowing appropriate read-only Git inspection;
-- require lane resolution before editing and say what to do when no lane can be resolved unambiguously;
+- require lane resolution before editing: inspect and reuse a clearly fitting existing lane, otherwise create a concise descriptive lane without routine user confirmation;
 - require immediate, selective assignment of each coherent owned file or hunk change to the owning lane;
 - require explicit targeting of the owning lane when GitButler could otherwise choose another position;
 - prohibit broad commits or assignments that could capture another agent's uncommitted work;

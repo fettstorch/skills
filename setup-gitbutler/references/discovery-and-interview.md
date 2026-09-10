@@ -53,9 +53,9 @@ Ask focused questions when evidence cannot resolve a material choice. Prefer one
 - “The formatter mutates the full workspace. Should GitButler attribution wrap that existing behavior unchanged?”
 - “This harness has agent completion but no subagent completion event. Should we install only a start/edit reminder and document the limitation?”
 - “No verification workflow appears to exist. Should this setup introduce one, or limit itself to lane-assignment enforcement?”
-- “Tasks without issue IDs have no established lane convention. Should agents ask every time, or may they create a descriptive lane?”
+- “Several existing lanes appear to own this exact task, and a new independent lane would fragment one of them. Which lane should continue the work?”
 
-Do not ask questions already answered by current repository evidence. Do not silently choose a behavior that changes verification, lane creation, publishing authorization, or harness enforcement.
+Do not ask questions already answered by current repository evidence. Creating a task lane is routine ownership setup: inspect existing lanes, reuse one only when it clearly fits, and otherwise create a concise descriptive lane without asking. Ask only for a genuine ownership conflict that a new independent lane cannot resolve. Do not silently choose a behavior that changes verification, publishing authorization, or harness enforcement.
 
 ## 5. Design from the answers
 

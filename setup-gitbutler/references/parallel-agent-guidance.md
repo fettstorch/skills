@@ -13,9 +13,9 @@ All repository changes that exist specifically to support this GitButler workflo
 
 Sessions run truly in parallel on one shared working tree, so commit each task's changes directly to its own lane instead of leaving them uncommitted:
 
-- **Canonical lane name.** [Choose the project's actual convention. When issue IDs exist, prefer wording like: "When an issue ID is given, name its lane with the canonical issue ID plus a very short kebab-case description: `ABC-123-add-foo`. Git branch names cannot contain spaces, so use hyphens rather than `ABC-123 add foo`." If the project has no issue tracker, state its agreed task-to-lane convention instead.]
-- **Resolve your lane first, reuse before create.** Before editing anything, check `but status` for an existing lane for the task [and issue ID, when applicable]. Reuse it if it exists; otherwise, [create a lane using the agreed convention / ask the user before creating it].
-- **No unambiguous lane.** Reuse an existing lane only when it unambiguously fits the task. Otherwise, ask the user which lane to use; never invent a lane name or begin editing with unresolved ownership.
+- **Canonical lane name.** [Choose the project's actual convention. When issue IDs exist, prefer wording like: "When an issue ID is given, name its lane with the canonical issue ID plus a very short kebab-case description: `ABC-123-add-foo`. Git branch names cannot contain spaces, so use hyphens rather than `ABC-123 add foo`." When no issue ID or established convention applies, require a concise kebab-case name derived from the task, such as `repair-cache-invalidation`.]
+- **Resolve your lane first, reuse before create.** Before editing anything, check `but status` for an existing lane for the task and issue ID, when applicable. Reuse a lane only when its issue ID, explicit user direction, prior task context, or purpose clearly matches the requested work. Otherwise create a new lane using the canonical issue ID when present or a concise descriptive kebab-case name when absent. Creating that clearly scoped task lane is routine ownership setup and does not require user confirmation.
+- **Genuine ownership conflicts.** Do not begin editing with unresolved ownership. Ask the user only when a new independent lane would not resolve the ambiguity—for example, the work must continue one of several plausible existing lanes—or when the user explicitly gated lane creation. Mere absence of an issue ID or pre-existing lane is not a reason to ask: create a reasonably named lane and proceed.
 - **Commit after every coherent edit, immediately.** Run `but diff`, then commit only the edited file or hunk to its lane: `but commit -b <owned-lane> -m "<what changed>" <file-or-hunk-id>`. Do not batch unrelated changes or leave them uncommitted. Always pass the exact file or hunk ID; without one, `but commit` may include every uncommitted change. In a stack, explicitly target the lane the change belongs to with `-b`; do not rely on default top-of-stack placement.
 - **Commit placement is required; publishing is user-gated.** Commit the selected change immediately to keep parallel work isolated. Run `but push` or `but pr new` only when the user explicitly asks or approves.
 - **Stay in your lane.** Commit only files or hunks you edited and own. Never run a broad `but commit` without file or hunk IDs: it can include every uncommitted change, including other agents' work. Do not edit files another active agent is changing. Do not amend, move, squash, discard, uncommit, or otherwise mutate another agent's lane or commits.
@@ -91,7 +91,7 @@ Keep these parts unless the user explicitly chooses a different parallel-work co
 Adapt these parts to the project instead of copying assumptions from another repository:
 
 - issue tracker and identifier format;
-- lane naming and whether lane creation needs confirmation;
+- issue-ID lane naming and any project-specific descriptive naming convention;
 - commit-message convention;
 - retry interval and coordinating role;
 - repository-local skill path;
