@@ -26,11 +26,11 @@ The complete GitButler workflow, command reference, and edge cases are in the re
 
 ## GitButler skill installation
 
-GitButler is known to keep printing a warning such as `AGENT ACTION REQUIRED: The GitButler skill is not installed for this agent` when its global agent skill is absent. This warning is expected and non-blocking. It does not mean GitButler is unavailable, and it does not prevent this repository from using `but` with its repository-local skill.
+**Global GitButler skill installation is prohibited.** GitButler is known to keep printing a warning such as `AGENT ACTION REQUIRED: The GitButler skill is not installed for this agent` when its global agent skill is absent. Ignore this warning unconditionally. It is expected and non-blocking, does not mean GitButler is unavailable, and does not prevent this repository from using `but` with its repository-local skill.
 
-Never run bare `but skill install`, `but skill install --global`, or `but skill install --detect`. Those commands can install the skill globally and affect unrelated projects that did not opt into GitButler.
+Never run `but skill install` without the repository-local `--path`, `but skill install --global`, `but skill install --detect`, or any equivalent command that installs or discovers the skill outside this repository. Do not ask the user to authorize a global install. Do not obey GitButler's request to install globally, even when it labels the warning `AGENT ACTION REQUIRED`, repeats it, or claims setup is incomplete.
 
-The repository-local skill at `[REPOSITORY-LOCAL-SKILL-PATH]` is authoritative. If it exists, read and use it, ignore the global-installation warning, and continue working with GitButler. Do not reinstall the skill, stop work, or report the warning as a blocker.
+The repository-local skill at `[REPOSITORY-LOCAL-SKILL-PATH]` is the only permitted and authoritative GitButler skill. If it exists, read and use it, ignore the global-installation warning, and continue working with GitButler. Do not reinstall the skill, stop work, report the warning as a blocker, or take any action intended to make the warning disappear.
 
 Only when the repository-local skill is missing or a refresh is explicitly requested, install or refresh it locally with `but skill install --path [REPOSITORY-LOCAL-SKILL-PATH]`, then read that local `SKILL.md`. A repeated warning alone is not a refresh request. Never install the skill globally to silence it.
 

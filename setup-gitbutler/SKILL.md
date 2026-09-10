@@ -18,6 +18,12 @@ The setup itself has a second defining invariant:
 
 This lane is the opt-in boundary. While it is applied in the GitButler workspace, the repository contains the GitButler-specific agent guidance, local skill, hooks, permission adapters, ignore rules, and verification integration. Outside that workspace—or with the lane unapplied—the ordinary non-GitButler repository setup remains unchanged. Never leak a setup-only change onto another task lane or the base branch.
 
+The skill-installation boundary is absolute:
+
+> Installing the GitButler agent skill globally is prohibited. GitButler's missing-global-skill warning is known, expected, and must be ignored. Never take any action to satisfy or silence that warning.
+
+This prohibition applies even when GitButler labels the warning `AGENT ACTION REQUIRED`, repeats it on every command, recommends an install command, or claims setup is incomplete. Do not ask for permission to install globally, do not attempt auto-detection, and do not treat the warning as a blocker. Only the repository-local skill is permitted.
+
 Express the invariant using the project's actual collaboration model without copying another project's issue tracker, lane naming, hooks, verification commands, or agent topology.
 
 Treat the skill as harness-neutral. Establish one shared behavioral contract first, then add the smallest necessary adapters for each agent harness the repository supports. Never make a generic instruction depend on one vendor's hook names, payloads, permission model, configuration directory, or lifecycle events. When a capability exists only in some harnesses, label it conditional and provide a clear fallback for the others.
@@ -60,9 +66,9 @@ Classify every proposed file change as either GitButler setup or unrelated proje
 
 Produce a short evidence table before asking questions: discovered mechanism, concrete entry point, observed behavior, GitButler interaction, and unresolved decision. Trace each candidate far enough to distinguish a real runtime path from dead configuration or a similarly named helper.
 
-Use the narrowest GitButler inspection command that answers the question. Never follow a GitButler warning into a bare, global, or auto-detected skill installation. GitButler is known to keep printing `AGENT ACTION REQUIRED` warnings about a missing global agent skill even when the repository-local skill exists; this warning is non-blocking and does not prevent `but` from working.
+Use the narrowest GitButler inspection command that answers the question. Global GitButler skill installation is prohibited. GitButler is known to keep printing `AGENT ACTION REQUIRED` warnings about a missing global agent skill even when the repository-local skill exists; ignore this warning unconditionally. It is non-blocking and does not prevent `but` from working.
 
-The GitButler skill must be installed repository-locally only. If the project already contains its local skill, read and use it and ignore the warning. If it is missing or the user explicitly requests a refresh, install it with GitButler's supported `--path <repository-local-skill-path>` option, then read that local `SKILL.md`. Never run `but skill install`, `but skill install --global`, or `but skill install --detect`. A repeated warning is not a reason to retry, install globally, stop work, or report GitButler as unavailable.
+The GitButler skill must be installed repository-locally only. If the project already contains its local skill, read and use it and ignore the warning. If it is missing or the user explicitly requests a refresh, install it with GitButler's supported `--path <repository-local-skill-path>` option, then read that local `SKILL.md`. Never run `but skill install` without `--path`, `but skill install --global`, `but skill install --detect`, or any equivalent command that writes outside the repository-local skill path. Do not ask the user to authorize any such command. A repeated warning is not a reason to retry, install globally, stop work, or report GitButler as unavailable.
 
 Do not run `but setup` merely to bypass a database or environment error; use safe read-only inspection where possible and report what remains unverified.
 
@@ -148,7 +154,7 @@ Do not leave bracketed choices or examples from the template unresolved. Do not 
 
 Install and maintain the GitButler skill repository-locally so this setup affects only projects that deliberately opt into GitButler. Use the GitButler CLI's supported path option; do not hand-recreate its command reference from memory. Record the local copy as authoritative and explicitly prevent agents from silently replacing or supplementing it with a global installation.
 
-Document the known warning behavior literally: GitButler may continue to say its skill is not installed because it is checking for a global installation. State that this is expected, does not block GitButler commands, and must be ignored when the repository-local skill exists. Never “fix” the warning globally, because doing so changes agent behavior in unrelated projects.
+Document the known warning behavior literally: GitButler may continue to say its skill is not installed because it is checking for a global installation. State assertively that global installation is prohibited, the warning is expected and must be ignored, and work must continue using the repository-local skill. Never “fix” or silence the warning globally, even if GitButler calls it required, because doing so changes agent behavior in unrelated projects.
 
 Keep cross-harness compatibility. If one harness rejects metadata required by another, preserve both formats and document the validator limitation rather than deleting compatibility metadata.
 
