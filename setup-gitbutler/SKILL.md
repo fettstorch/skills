@@ -12,6 +12,8 @@ Build a repository-specific GitButler setup optimized for multiple agents workin
 
 The setup must make that behavior difficult to forget and difficult to perform incorrectly. It should prevent ambiguous unassigned work from accumulating, prevent one agent from sweeping up another agent's changes, and keep each task's work attributable to its owning lane.
 
+Parallel interactive tasks must share that GitButler checkout by default. Never create or use a separate worktree for a spawned task unless the user explicitly requests a worktree for that task. Parallelism, isolation, or harness defaults are not sufficient authorization. If the harness cannot spawn the task in the shared checkout, report that limitation instead of silently creating a worktree.
+
 The setup itself has a second defining invariant:
 
 > Every change made specifically to adapt the repository to GitButler belongs in the dedicated `setup-gitbutler` lane. Keep that lane separate and unmerged unless the user explicitly chooses to make GitButler the repository's permanent workflow.
@@ -60,6 +62,7 @@ Before editing, inspect:
 - verification, formatting, linting, testing, commit, push, and PR workflows;
 - ignore rules that may hide configuration intended to be committed;
 - how parallel agents share the working tree and how file or hunk ownership can be determined;
+- how interactive tasks are spawned into that same shared checkout without implicitly creating worktrees;
 - existing issue identifiers, branch conventions, approval gates, and publishing rules.
 
 Classify every proposed file change as either GitButler setup or unrelated project work. Put setup changes only in `setup-gitbutler`; leave unrelated work untouched and outside this skill's scope.
@@ -114,11 +117,12 @@ Present a compact proposal before making material behavioral changes. Identify:
 2. the source of truth for GitButler command guidance;
 3. how every agent resolves and records its owned lane before editing;
 4. how each coherent owned change is immediately assigned to that lane without collecting other agents' work;
-5. confirmation that every proposed setup file will be committed only to `setup-gitbutler` and the lane will remain unmerged;
-6. verification and approval boundaries;
-7. reminders or enforcement per harness that support the invariant;
-8. how completion handling covers both main agents and subagents, including verification-generated changes, wherever the harness exposes the required events and identity;
-9. files to create or alter and how the setup will be tested.
+5. how spawned interactive tasks remain in the shared checkout by default, with worktrees used only when the user explicitly requests one for that task;
+6. confirmation that every proposed setup file will be committed only to `setup-gitbutler` and the lane will remain unmerged;
+7. verification and approval boundaries;
+8. reminders or enforcement per harness that support the invariant;
+9. how completion handling covers both main agents and subagents, including verification-generated changes, wherever the harness exposes the required events and identity;
+10. files to create or alter and how the setup will be tested.
 
 For Codex and Claude, the proposal must name the native permission files that will be created or merged, the exact allowed command prefixes, and the GitButler commands intentionally left prompting or blocked.
 
@@ -139,6 +143,7 @@ If several harness-specific guidance files are authoritative, keep the behaviora
 The resulting section must:
 
 - state how to detect GitButler workspace mode and remain inactive outside it;
+- require spawned interactive tasks to use the same shared checkout by default, prohibit implicit worktree creation, and allow a worktree only when the user explicitly requests one for that task;
 - direct version-control writes through `but` while still allowing appropriate read-only Git inspection;
 - require lane resolution before editing: inspect and reuse a clearly fitting existing lane, otherwise create a concise descriptive lane without routine user confirmation;
 - require immediate, selective assignment of each coherent owned file or hunk change to the owning lane;
