@@ -12,6 +12,10 @@ Build a repository-specific GitButler setup optimized for multiple agents workin
 
 The setup must make that behavior difficult to forget and difficult to perform incorrectly. It should prevent ambiguous unassigned work from accumulating, prevent one agent from sweeping up another agent's changes, and keep each task's work attributable to its owning lane.
 
+When GitButler workspace mode is active, this repository-level isolation contract takes precedence over otherwise applicable workflow skills: the mandatory immediate selective-commit rule **overrides skill-level no-commit approval gates**. The override is limited to committing the exact owned files or hunks locally to the already-resolved lane after each coherent edit. It does not bypass a gate before implementation, and it never authorizes pushing, PR creation, GitHub reactions or replies, thread resolution, destructive or history-changing operations, or any other consequential external action. Outside GitButler workspace mode, every workflow skill keeps its ordinary commit timing unchanged.
+
+For `pr-work`, this means Step A implements and verifies one selected issue, immediately commits only that issue's owned files or hunks to the resolved lane, shows the result, and stops for approval. Approval then authorizes the GitHub reply or reaction, thread resolution when appropriate, and push. Do not modify `pr-work` or weaken its non-GitButler behavior to achieve this; inject the workspace-only precedence through this setup instead.
+
 Parallel interactive tasks must share that GitButler checkout by default. Never create or use a separate worktree for a spawned task unless the user explicitly requests a worktree for that task. Parallelism, isolation, or harness defaults are not sufficient authorization. If the harness cannot spawn the task in the shared checkout, report that limitation instead of silently creating a worktree.
 
 The setup itself has a second defining invariant:
@@ -150,6 +154,8 @@ The resulting section must:
 - require explicit targeting of the owning lane when GitButler could otherwise choose another position;
 - prohibit broad commits or assignments that could capture another agent's uncommitted work;
 - distinguish mandatory local lane assignment from user-gated publishing or other approval-sensitive actions;
+- state explicitly that, while GitButler workspace mode is active, immediate selective local commits override skill-level no-commit approval gates, without bypassing pre-implementation gates or authorizing publication, GitHub interaction, destructive actions, or history changes;
+- give `pr-work` as the concrete conflict example: Step A implements, verifies, selectively commits to the resolved owned lane, presents the result, and stops; approval gates the reply, reaction, resolution, and push;
 - tell agents how to respond when a failure may belong to another lane or agent;
 - point to the authoritative GitButler skill rather than duplicating its complete command manual.
 - state that GitButler-specific setup files are owned by the long-lived `setup-gitbutler` lane and that the lane must not be merged without an explicit permanent-migration decision.
@@ -176,6 +182,7 @@ For each supported harness, verify actual event delivery and payload/output cont
 
 - session or subagent reminders to resolve the owned lane before editing;
 - edit-time reminders to assign the just-created owned file or hunk immediately;
+- workspace-mode reminders that explicitly say immediate selective local commits override skill-level no-commit approval gates while all pre-implementation, publication, GitHub-interaction, destructive-action, and history-change gates remain intact;
 - marking that a session or turn changed files;
 - gating broad or incorrectly targeted GitButler mutations;
 - gating selected GitButler mutations on required verification;
@@ -186,7 +193,7 @@ For every capable harness, the completion path must:
 1. determine whether that exact agent or subagent owns pending edits using its scoped marker or identity, never global dirty state;
 2. run the project's existing verification pipeline unchanged by default and record sufficiently precise before/after state around its mutating phases to identify files created or changed by formatting, lint fixes, code generation, or other automatic fixes;
 3. when owned work or generated changes remain unassigned, block completion or issue the harness's supported follow-up to that same agent or subagent;
-4. name the exact affected files and instruct that agent to inspect them with `but diff`, then selectively commit only its owned file or hunk IDs to its already-resolved lane;
+4. name the exact affected files and instruct that agent to inspect them with `but diff`, then selectively commit only its owned file or hunk IDs to its already-resolved lane; explicitly say that a conflicting skill-level no-commit approval gate does not justify leaving those owned changes unassigned in GitButler workspace mode;
 5. preserve the marker after failure or auto-fix so the same agent can retry;
 6. report success only after verification passes, no owned generated changes remain, and the successful marker is consumed.
 
@@ -246,6 +253,8 @@ Run proportionate checks for every changed layer:
 - a two-clean-completion test when the harness uses retry-on-block semantics, proving the first clean completion gives the final lane reminder and the second consumes the marker;
 - a write-surface audit covering shell, patch, formatter, generator, connector, IDE, and other mutation paths, with each classified as tracked, gated, or a documented limitation;
 - simulations with multiple agents' unassigned changes proving that one agent selects only its owned file or hunk IDs and explicitly targets its lane;
+- a workflow-precedence simulation proving that a skill-level no-commit approval gate cannot leave owned changes uncommitted in GitButler workspace mode, while the same skill keeps its ordinary timing outside that mode;
+- a `pr-work` simulation proving Step A implements, verifies, and selectively commits one issue before stopping, while reactions, replies, thread resolution, and push remain approval-gated;
 - a missing- or ambiguous-lane path proving the agent stops before editing rather than guessing;
 - status and history evidence proving every GitButler setup file is committed exclusively to `setup-gitbutler` and no setup-only change leaked into another lane or the base;
 - a lifecycle check proving the lane remains applied as an opt-in layer but unmerged, un-squashed, and undeleted;
