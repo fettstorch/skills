@@ -16,7 +16,7 @@ When GitButler workspace mode is active, this repository-level isolation contrac
 
 For `pr-work`, this means Step A implements and verifies one selected issue, immediately commits only that issue's owned files or hunks to the resolved lane, shows the result, and stops for approval. Approval then authorizes the GitHub reply or reaction, thread resolution when appropriate, and push. Do not modify `pr-work` or weaken its non-GitButler behavior to achieve this; inject the workspace-only precedence through this setup instead.
 
-Parallel interactive tasks must share that GitButler checkout by default. Never create or use a separate worktree for a spawned task unless the user explicitly requests a worktree for that task. Parallelism, isolation, or harness defaults are not sufficient authorization. If the harness cannot spawn the task in the shared checkout, report that limitation instead of silently creating a worktree.
+Parallel interactive tasks must share that GitButler checkout by default. Never create or use a separate Git worktree unless the user explicitly instructs you to use one. This prohibition must be written into the repository's authoritative project guidance, such as `AGENTS.md`, `CLAUDE.md`, or its equivalent, so it applies before any harness chooses an execution environment. Parallelism, isolation, or harness defaults are not sufficient authorization. If the harness cannot spawn the task in the shared checkout, report that limitation instead of silently creating a worktree.
 
 The setup itself has a second defining invariant:
 
@@ -147,7 +147,7 @@ If several harness-specific guidance files are authoritative, keep the behaviora
 The resulting section must:
 
 - state how to detect GitButler workspace mode and remain inactive outside it;
-- require spawned interactive tasks to use the same shared checkout by default, prohibit implicit worktree creation, and allow a worktree only when the user explicitly requests one for that task;
+- include an explicit project-wide rule such as **"Do not create or use Git worktrees unless the user explicitly instructs you to"** in the authoritative repository guidance, require spawned interactive tasks to use the same shared checkout by default, and treat parallelism, isolation, or harness defaults as insufficient authorization;
 - direct version-control writes through `but` while still allowing appropriate read-only Git inspection;
 - require lane resolution before editing: inspect and reuse a clearly fitting existing lane, otherwise create a concise descriptive lane without routine user confirmation;
 - require immediate, selective assignment of each coherent owned file or hunk change to the owning lane;

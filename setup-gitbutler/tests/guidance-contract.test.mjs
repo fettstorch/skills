@@ -32,6 +32,15 @@ test("injected guidance keeps consequential actions approval-gated", () => {
   }
 });
 
+test("injected guidance prohibits worktrees without explicit user instruction", () => {
+  assert.match(
+    template,
+    /Do not create or use a Git worktree unless the user explicitly instructs you to use one\./,
+  );
+  assert.match(template, /Spawn new interactive tasks in this same checkout by default\./);
+  assert.match(skill, /written into the repository's authoritative project guidance/);
+});
+
 test("pr-work Step A commits locally before the approval stop", () => {
   assert.match(
     template,

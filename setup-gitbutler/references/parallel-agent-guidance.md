@@ -13,7 +13,7 @@ All repository changes that exist specifically to support this GitButler workflo
 
 Sessions run truly in parallel on one shared working tree, so commit each task's changes directly to its own lane instead of leaving them uncommitted:
 
-- **Spawn into the shared checkout.** Spawn new interactive tasks in this same checkout by default. Never create or use a separate worktree for a spawned task unless the user explicitly requests a worktree for that task. Parallelism, isolation, or harness defaults are not sufficient authorization. If the harness cannot spawn the task here without a worktree, report that blocker instead of spawning it elsewhere.
+- **Do not create Git worktrees without explicit instruction.** Do not create or use a Git worktree unless the user explicitly instructs you to use one. Spawn new interactive tasks in this same checkout by default. Parallelism, isolation, or harness defaults are not sufficient authorization. If the harness cannot spawn the task here without a worktree, report that blocker instead of spawning it elsewhere.
 - **Canonical lane name.** [Choose the project's actual convention. When issue IDs exist, prefer wording like: "When an issue ID is given, name its lane with the canonical issue ID plus a very short kebab-case description: `ABC-123-add-foo`. Git branch names cannot contain spaces, so use hyphens rather than `ABC-123 add foo`." When no issue ID or established convention applies, require a concise kebab-case name derived from the task, such as `repair-cache-invalidation`.]
 - **Resolve your lane first, reuse before create.** Before editing anything, check `but status` for an existing lane for the task and issue ID, when applicable. Reuse a lane only when its issue ID, explicit user direction, prior task context, or purpose clearly matches the requested work. Otherwise create a new lane using the canonical issue ID when present or a concise descriptive kebab-case name when absent. Creating that clearly scoped task lane is routine ownership setup and does not require user confirmation.
 - **Genuine ownership conflicts.** Do not begin editing with unresolved ownership. Ask the user only when a new independent lane would not resolve the ambiguity—for example, the work must continue one of several plausible existing lanes—or when the user explicitly gated lane creation. Mere absence of an issue ID or pre-existing lane is not a reason to ask: create a reasonably named lane and proceed.
@@ -76,6 +76,7 @@ Audit every write-capable tool surface. Direct shell mutations, patch tools, for
 Keep these parts unless the user explicitly chooses a different parallel-work contract:
 
 - activation only in GitButler workspace mode;
+- an explicit project-wide prohibition in the authoritative repository guidance against creating or using Git worktrees without the user's explicit instruction;
 - every GitButler-specific setup change is committed exclusively to the dedicated `setup-gitbutler` lane;
 - `setup-gitbutler` remains long-lived, separately applicable, and unmerged unless the user explicitly chooses permanent migration;
 - lane resolution before editing;
