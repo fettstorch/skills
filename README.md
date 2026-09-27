@@ -32,6 +32,7 @@ Use `--agent` and `--scope` to control placement, or `--from-local ./skills` to 
 | `create-issues` | auto | Turns a plan or spec into reviewed vertical-slice Linear issues with abstract requirements. |
 | `for-each` | manual | Applies one command, skill, or strategy to every item in a list without pausing between items. |
 | `handoff` | auto | Compacts the conversation into a handoff doc so a fresh session can continue the work. |
+| `implement` | manual | Delegates one coherent semantic change to an implementer subagent. |
 | `interview-me` | auto | Interviews you about a plan/design, one high-impact question at a time, until shared understanding. |
 | `just-asking` | manual | Signals a question (not a change request) so the agent defends its solution instead of blindly pivoting. |
 | `learning` | manual | Turns useful user criticism into durable, appropriately scoped learnings. |

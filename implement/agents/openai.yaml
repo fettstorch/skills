@@ -1,0 +1,6 @@
+interface:
+  display_name: "Implement"
+  short_description: "Delegate one coherent change to an implementer"
+  default_prompt: "Use $implement to delegate this semantic change to an implementer subagent."
+policy:
+  allow_implicit_invocation: false
