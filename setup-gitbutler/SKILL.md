@@ -51,6 +51,12 @@ Do not distribute setup changes across feature lanes even if a setup adjustment 
 
 Do not merge, squash into the base, create a merge PR for, auto-merge, or otherwise land `setup-gitbutler` by default. Do not delete it after setup. It is intentionally long-lived and separately applicable. Only merge it when the user explicitly says they want to make the GitButler setup permanent for ordinary checkouts as well. Pushing the lane or opening any PR remains separately user-gated.
 
+## Maintain the long-lived setup lane
+
+The generated authoritative project guidance must include the automatic setup-lane repair contract in [references/parallel-agent-guidance.md](references/parallel-agent-guidance.md). When a working task detects conflicts explicitly attributed by GitButler to `setup-gitbutler`, it must automatically dispatch a separate repair task in the shared checkout, with one repair owner per checkout/lane. This is authorized local maintenance, including the narrowly required setup-lane conflict-resolution rewrites; do not add a fresh blanket confirmation gate. Preserve unrelated approval gates and never publish or land the lane.
+
+During discovery, establish each harness's actual task creation/status capabilities, atomic shared reservation, and safe coordination with active writers. Resolve the template's adapter choices into executable project instructions. Copy the complete repair contract into the authoritative guidance; do not leave it dependent on access to this authoring skill. Explicitly document unsupported automatic dispatch when a harness lacks those capabilities. Do not simulate support through inline repair or an implicit worktree.
+
 ## Start with an audit
 
 Read [references/discovery-and-interview.md](references/discovery-and-interview.md) in full and follow it before proposing implementation. Discover behavior from entry points and call chains, not from assumed filenames. A verifier might be a package script, task-runner target, CI command, hook, executable, build-tool task, or harness configuration; it need not be named `verify` or be a shell script.
@@ -89,7 +95,7 @@ Read [references/permission-adapters.md](references/permission-adapters.md) in f
 
 Keep the shared permission intent under `.agents`, but use each harness's required native configuration path. There is no portable `.agents` execution-permission format that replaces Codex project rules or Claude project settings. Native adapter files are still GitButler setup changes and must be committed only to `setup-gitbutler`.
 
-Allow only the routine commands needed for lane-safe work by default: status/diff inspection, showing details, listing lanes, creating the explicitly resolved owned task lane, and selective commits to that lane. Do not use filesystem permission to bypass user authorization: pushing, PR creation, discards, resolution/history mutations, or other separately gated actions remain gated exactly as before. Broaden the allowlist only when the user explicitly chooses the additional command categories.
+Allow only the routine commands needed for lane-safe work by default: status/diff inspection, showing details, listing lanes, creating the explicitly resolved owned task lane, and selective commits to that lane. Do not use filesystem permission to bypass user authorization: pushing, PR creation, discards, resolution/history mutations, or other separately gated actions remain gated exactly as before. Broaden the allowlist only when the user explicitly chooses the additional command categories. The automatic setup-lane repair contract below supplies narrow action authority for that repair only; assess its execution permissions as described in `references/permission-adapters.md`, without a blanket history-mutation allowlist.
 
 Preserve unrelated work and existing repository conventions. Creating or reusing the required `setup-gitbutler` lane and selectively committing setup-owned changes to it are part of this workflow. Setting up the workflow does not authorize changing any other lane topology, committing unrelated work, pushing, opening a PR, or merging the setup lane.
 
@@ -264,6 +270,7 @@ Run proportionate checks for every changed layer:
 - permission checks proving routine GitButler access does not silently authorize publishing or destructive operations;
 - Codex rule-engine tests for every allowed and intentionally unallowed GitButler command;
 - Claude settings syntax checks plus allowlist inspection for the same command boundary;
+- repair scenarios covering proven setup attribution, ambiguous/mixed conflicts, simultaneous detectors, an existing blocked repair, unknown dispatch outcome, unavailable task creation, foreign dirty edits, semantic upstream preservation, and verified no-op after another repair;
 - a cross-harness review confirming that shared metadata and manual/automatic invocation rules remain intact;
 - a per-harness capability matrix distinguishing portable behavior from optional guidance, hook, sandbox, and configuration adapters;
 - GitButler status or equivalent read-only inspection to confirm the intended workspace/lane state was not accidentally changed.
