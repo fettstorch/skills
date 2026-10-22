@@ -14,6 +14,7 @@ Inspect the repository structure and follow the mechanisms it actually uses:
 - contributor documentation describing local checks, commits, releases, or parallel work;
 - ignore rules and repository-local state directories;
 - existing GitButler configuration, skills, lanes, and reminders.
+- each harness's separate-task creation/status APIs, shared-checkout support, atomic repair reservation mechanism, and active-writer coordination;
 - native project-level command permission rules for each supported harness, including existing allow and deny precedence.
 
 Search semantically for concepts such as format, fix, lint, check, test, validate, generate, pre-commit, completion, stop, hook, commit, and push. These are discovery terms, not required filenames or commands. Follow the repository's actual entry points instead of centering the audit on one conventional script name.

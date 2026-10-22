@@ -89,3 +89,7 @@ Validate JSON syntax, inspect the merged allow/deny boundary, and—when Claude 
 ## Other harnesses
 
 Discover their repository-local permission mechanism. Implement a native adapter only from current documentation or verified repository precedent. If no repository-local allowlist exists, keep the shared `.agents` policy, use the harness's supported approval flow, and document the limitation rather than inventing configuration.
+
+## Authorized setup-lane repair
+
+The automatic repair contract in `parallel-agent-guidance.md` grants narrow user authority for supported conflict resolution on `setup-gitbutler` only. It does not grant blanket `resolve`/`apply` command permission: native prefix rules may not constrain branch or operation scope sufficiently. During setup, check whether each harness can execute this authorized repair with its existing access or a genuinely scope-aware adapter. Preserve deny rules and document any remaining execution/trust blocker explicitly; never promise unattended repair when permissions prevent it. Do not introduce a new routine user-confirmation policy for dispatch or resolution already authorized by the contract. Keep technical execution permissions distinct from user authorization.
