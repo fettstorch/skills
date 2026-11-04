@@ -1,6 +1,6 @@
 # GitButler permission adapters
 
-Use one shared policy with native adapters for each supported harness. `.agents` is suitable for shared instructions and policy documentation, but it is not a cross-harness execution-permission configuration surface.
+Use this reference only when an observed GitButler access problem needs adaptation. Reuse existing permissions or the supported approval flow first; do not install adapters simply because a harness is supported. The examples below are optional access migrations, not setup requirements. `.agents` is suitable for shared instructions and policy documentation, but it is not a cross-harness execution-permission configuration surface.
 
 ## Shared policy
 
@@ -8,7 +8,7 @@ Record the intended command boundary in the repository's shared agent guidance o
 
 - allow routine read operations without repeated prompts;
 - allow creation of the explicitly resolved owned task lane because lane resolution before editing is part of the workflow;
-- allow selective `but commit` because immediate lane assignment is mandatory;
+- permit selective `but commit` only where local commits are already authorized by the project;
 - require direct `but` invocation so native prefix rules can classify it;
 - keep push, PR creation, discard, undo, amend, squash, move, uncommit, resolve, apply/unapply, and other history or topology mutations outside the default allowlist;
 - state that permission to execute a command does not change user authorization requirements.
@@ -19,7 +19,7 @@ Do not create a redundant policy file when the repository's shared guidance alre
 
 Codex project-local execution rules live in `.codex/rules/*.rules` and load only when the project `.codex` configuration layer is trusted. They cannot be relocated to `.agents`.
 
-Create or merge a dedicated file such as `.codex/rules/setup-gitbutler.rules`:
+If a project-local rule is needed and consistent with existing policy, merge the narrow required commands into an existing rule file or a dedicated file such as `.codex/rules/setup-gitbutler.rules`:
 
 ```python
 prefix_rule(
@@ -65,7 +65,7 @@ Validate with `codex execpolicy check --pretty --rules .codex/rules/setup-gitbut
 
 ## Claude Code
 
-Claude Code project permissions live in `.claude/settings.json`; they cannot be relocated to `.agents`. Merge these entries into the existing `permissions.allow` array without removing unrelated settings:
+Claude Code project permissions live in `.claude/settings.json`; they cannot be relocated to `.agents`. When existing Claude permissions need adaptation, select only the necessary entries from this example and merge them into the existing `permissions.allow` array without removing unrelated settings:
 
 ```json
 {
@@ -90,6 +90,6 @@ Validate JSON syntax, inspect the merged allow/deny boundary, and—when Claude 
 
 Discover their repository-local permission mechanism. Implement a native adapter only from current documentation or verified repository precedent. If no repository-local allowlist exists, keep the shared `.agents` policy, use the harness's supported approval flow, and document the limitation rather than inventing configuration.
 
-## Authorized setup-lane repair
+## Authorization remains separate
 
-The automatic repair contract in `parallel-agent-guidance.md` grants narrow user authority for supported conflict resolution on `setup-gitbutler` only. It does not grant blanket `resolve`/`apply` command permission: native prefix rules may not constrain branch or operation scope sufficiently. During setup, check whether each harness can execute this authorized repair with its existing access or a genuinely scope-aware adapter. Preserve deny rules and document any remaining execution/trust blocker explicitly; never promise unattended repair when permissions prevent it. Do not introduce a new routine user-confirmation policy for dispatch or resolution already authorized by the contract. Keep technical execution permissions distinct from user authorization.
+These examples describe execution permission only. They do not authorize commits, conflict resolution, repair dispatch, or history rewrites. Preserve existing approval gates, and use the normal approval flow where a prefix rule cannot express the necessary scope. Do not create a scope-aware adapter or repair service as part of compatibility setup.

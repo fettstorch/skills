@@ -1,63 +1,19 @@
-# Project discovery and interview
+# Discover and adapt existing workflows
 
-Use this process before designing GitButler-specific changes. Its purpose is to find the repository's actual workflow without assuming filenames, tools, languages, or agent harnesses.
+Read project instructions first. Inspect version-control state, local skill discovery, supported harnesses, permissions, manifests, CI and contributor check instructions. Use targeted `rg` and follow relevant callers; inspect the supported lifecycle events needed for lane reminders without auditing every possible harness capability.
 
-## 1. Discover entry points
+For an existing hook or check that touches version control, establish its configured entry point, trigger, scope, mutations, and approval boundary. A similarly named helper or unused configuration is not evidence of an active workflow. Do not assume a CI command is an agent completion verifier.
 
-Inspect the repository structure and follow the mechanisms it actually uses:
+Summarize only findings that affect the change. A compact table can distinguish existing mechanism, compatibility problem, minimal adaptation, and unresolved decision. If verification hooks or a completion verifier are absent, leave them absent. Create lightweight lane-assignment reminder hooks even when no hooks existed previously; this does not authorize new verification automation.
 
-- agent guidance and harness configuration;
-- package manifests and their scripts;
-- task runners, build tools, make targets, workspace configuration, and executable tooling directories;
-- CI workflows and required checks;
-- Git hooks, agent hooks, lifecycle callbacks, and editor automation;
-- contributor documentation describing local checks, commits, releases, or parallel work;
-- ignore rules and repository-local state directories;
-- existing GitButler configuration, skills, lanes, and reminders.
-- each harness's separate-task creation/status APIs, shared-checkout support, atomic repair reservation mechanism, and active-writer coordination;
-- native project-level command permission rules for each supported harness, including existing allow and deny precedence.
+Preserve all established harnesses and run appropriate existing checks without confirmation questions. Ask only for a consequential unresolved choice, such as two plausible owners of an existing lane or conflicting project instructions. Do not ask the user to reconfirm discoverable facts or ordinary verification.
 
-Search semantically for concepts such as format, fix, lint, check, test, validate, generate, pre-commit, completion, stop, hook, commit, and push. These are discovery terms, not required filenames or commands. Follow the repository's actual entry points instead of centering the audit on one conventional script name.
+## Migration examples — only when the mechanism already exists
 
-Use `rg --files`, targeted `rg`, and the repository's read-only inspection tools. Avoid broad dependency, generated-output, or vendored-directory scans unless the relevant entry point leads there.
+- An existing pre-commit hook uses raw Git staging to gather files. Adapt that version-control operation to the project's supported GitButler selection workflow while preserving the hook's existing check commands, trigger, scope, and failure behavior. Keep lane-reminder registration separate from this verification migration.
+- An existing agent reminder tells agents to use `git add` and `git commit`. Update that reminder to use the local GitButler skill in workspace mode; preserve its existing event registration. For supported harnesses without a reminder, add a lightweight lane-assignment reminder at a suitable supported event.
+- An existing check auto-formats files. Keep its invocation and scope unchanged. Inspect resulting changes and selectively assign only owned changes using the existing workflow; do not add snapshots, fingerprint infrastructure, edit markers, or a completion pipeline.
+- Existing supported harnesses discover instructions differently. Update their existing pointers to shared GitButler guidance rather than copying a new automation stack into each harness.
+- A repository has guidance and checks but no hooks. Adapt guidance and skill access, add lightweight lane-assignment reminder hooks, and run checks relevant to the edited files. Do not add build or typecheck hooks.
 
-## 2. Trace behavior
-
-For each candidate, trace callers and callees far enough to answer:
-
-- What invokes it locally, in CI, or through an agent harness?
-- Does it mutate files, only report errors, or do both?
-- Which commands run, in what order and scope?
-- Does it run for main agents, subagents, humans, or all of them?
-- What indicates success, failure, retry, and completion?
-- Can concurrent changes from another agent affect its inputs or output?
-- Which routine GitButler commands currently prompt or fail, and which native project configuration controls that behavior?
-- Is this the canonical path or merely an unused helper, wrapper, or historical configuration?
-
-Do not infer that similarly named commands are equivalent. Do not call a hook active until its owning configuration references it. Do not call a pipeline canonical solely because CI invokes it if local agent behavior uses another path.
-
-## 3. Present evidence
-
-Summarize findings compactly before proposing changes:
-
-| Area | Entry point | Observed behavior | GitButler interaction | Unknown |
-|---|---|---|---|---|
-| Verification | concrete command or config | order, scope, mutations | attribution or lane risk | user decision if needed |
-
-Include only rows that affect the setup. Mark facts as verified, inferred, or unverified runtime behavior.
-
-## 4. Interview on unresolved choices
-
-Ask focused questions when evidence cannot resolve a material choice. Prefer one question at a time. Typical questions include:
-
-- “I found these two verification entry points. Which one is canonical for agent completion?”
-- “The formatter mutates the full workspace. Should GitButler attribution wrap that existing behavior unchanged?”
-- “This harness has agent completion but no subagent completion event. Should we install only a start/edit reminder and document the limitation?”
-- “No verification workflow appears to exist. Should this setup introduce one, or limit itself to lane-assignment enforcement?”
-- “Several existing lanes appear to own this exact task, and a new independent lane would fragment one of them. Which lane should continue the work?”
-
-Do not ask questions already answered by current repository evidence. Creating a task lane is routine ownership setup: inspect existing lanes, reuse one only when it clearly fits, and otherwise create a concise descriptive lane without asking. Ask only for a genuine ownership conflict that a new independent lane cannot resolve. Do not silently choose a behavior that changes verification, publishing authorization, or harness enforcement.
-
-## 5. Design from the answers
-
-Only after discovery and necessary user answers, propose the concrete files and integration points. Preserve existing pipelines by default. Add GitButler attribution, reminders, and gates around verified runtime paths; do not manufacture a known example project's topology.
+These examples are decision aids, not files or features to install. If adapting an existing mechanism would require a broader redesign, explain the incompatibility and isolate that decision from the minimal setup.

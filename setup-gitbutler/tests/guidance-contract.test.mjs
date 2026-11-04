@@ -2,58 +2,59 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const skillUrl = new URL("../SKILL.md", import.meta.url);
-const guidanceUrl = new URL("../references/parallel-agent-guidance.md", import.meta.url);
-
-const [skill, guidanceReference] = await Promise.all([
-  readFile(skillUrl, "utf8"),
-  readFile(guidanceUrl, "utf8"),
+const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
+const [skill, guidance, discovery, permissions, metadata] = await Promise.all([
+  read("../SKILL.md"),
+  read("../references/parallel-agent-guidance.md"),
+  read("../references/discovery-and-interview.md"),
+  read("../references/permission-adapters.md"),
+  read("../agents/openai.yaml"),
 ]);
+const template = guidance.match(/```markdown\n([\s\S]*?)\n```/)?.[1];
 
-const templateMatch = guidanceReference.match(/```markdown\n([\s\S]*?)\n```/);
-assert.ok(templateMatch, "parallel-agent guidance must contain an injectable Markdown template");
-const template = templateMatch[1];
-
-test("injected guidance scopes commit precedence to GitButler workspace mode", () => {
-  assert.match(template, /If, and only if, the current branch is `gitbutler\/workspace`/);
-  assert.match(template, /overrides skill-level no-commit approval gates/);
-  assert.match(template, /Outside GitButler workspace mode, use `pr-work` unchanged/);
+// Instruction contracts guard the scope regressions seen during real setup.
+// They do not claim to prove an agent's behavior or live harness integration.
+test("manual invocation remains configured for both harness formats", () => {
+  assert.match(skill, /^disable-model-invocation: true$/m);
+  assert.match(metadata, /^  allow_implicit_invocation: false$/m);
 });
 
-test("injected guidance keeps consequential actions approval-gated", () => {
-  for (const action of [
-    "push",
-    "create a PR",
-    "react or reply on GitHub",
-    "resolve a review thread",
-    "destructive or history-changing operations",
-  ]) {
-    assert.ok(template.includes(action), `missing gated action: ${action}`);
-  }
+test("new lane reminders are required while verification hooks remain migration-only", () => {
+  assert.match(skill, /Create lightweight hooks that remind agents/);
+  assert.match(skill, /Reuse suitable existing reminder hooks or add the smallest supported hook when none exists/);
+  assert.match(skill, /These hooks must not build, typecheck, lint, test, invoke a verifier/);
+  assert.match(skill, /Adapt existing verification hooks only when necessary for GitButler compatibility/);
+  assert.match(skill, /Prefer a stateless reminder/);
+  assert.match(skill, /must not automatically commit, run project checks, or introduce ownership infrastructure/);
+  assert.match(discovery, /Create lightweight lane-assignment reminder hooks even when no hooks existed previously/);
+  assert.doesNotMatch([skill, guidance, discovery, permissions].join("\n"), /must automatically dispatch|standing user authorization|For every capable harness|two-step clean handshake|overrides skill-level no-commit/);
 });
 
-test("injected guidance prohibits worktrees without explicit user instruction", () => {
-  assert.match(
-    template,
-    /Do not create or use a Git worktree unless the user explicitly instructs you to use one\./,
-  );
-  assert.match(template, /Spawn new interactive tasks in this same checkout by default\./);
-  assert.match(skill, /written into the repository's authoritative project guidance/);
+test("guidance retains selective lane ownership and existing approval gates", () => {
+  assert.ok(template, "shared guidance example is available");
+  assert.match(template, /When the current branch is `gitbutler\/workspace`/);
+  assert.match(template, /select only your owned file or hunk IDs/);
+  assert.match(template, /including any no-commit gate in a workflow skill/);
+  assert.match(template, /Do not push, publish, create a PR, or merge without explicit authorization/);
+  assert.match(template, /does not authorize automatic repair tasks or history rewrites/);
 });
 
-test("pr-work Step A commits locally before the approval stop", () => {
-  assert.match(
-    template,
-    /For `pr-work` specifically, Step A implements and verifies one selected issue, immediately commits only that issue's owned files or hunks to the resolved lane, presents the result, and stops\./,
-  );
-  assert.match(
-    template,
-    /Approval authorizes the Step B reaction or reply, thread resolution when appropriate, and push\./,
-  );
+test("existing harnesses and checks do not trigger ceremonial questions or adapters", () => {
+  assert.match(skill, /Support the harnesses already established by repository evidence without asking/);
+  assert.match(skill, /Do not ask rhetorical confirmation questions/);
+  assert.match(skill, /Run appropriate existing checks for the changed surfaces/);
+  assert.match(permissions, /do not install adapters simply because a harness is supported/);
 });
 
-test("setup instructions require both injected guidance and lifecycle enforcement", () => {
-  assert.match(skill, /overrides skill-level no-commit approval gates/);
-  assert.match(skill, /workspace-mode reminders that explicitly say immediate selective local commits override/);
-  assert.match(skill, /a `pr-work` simulation proving Step A implements, verifies, and selectively commits/);
+test("local skill and protected database boundaries remain intact", () => {
+  assert.match(template, /Global installation is prohibited/);
+  assert.match(template, /Ignore the known missing-global-skill warning/);
+  assert.match(template, /Do not run `but setup` as a workaround or fall back to raw Git writes/);
+  assert.match(template, /do not create or use a Git worktree without explicit user instruction/);
+});
+
+test("all entrypoint reference links resolve locally", async () => {
+  const references = [...skill.matchAll(/\]\((references\/[^)]+)\)/g)].map((m) => m[1]);
+  assert.equal(new Set(references).size, 3);
+  await Promise.all(references.map((path) => read(`../${path}`)));
 });
