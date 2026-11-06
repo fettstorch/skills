@@ -2,6 +2,8 @@
 
 Read project instructions first. Inspect version-control state, local skill discovery, supported harnesses, permissions, manifests, CI and contributor check instructions. Use targeted `rg` and follow relevant callers; inspect the supported lifecycle events needed for lane reminders without auditing every possible harness capability.
 
+Record the actual HEAD, existing setup lane, and pre-existing changes before editing. Successful lane creation is not proof of workspace mode. Identify concrete commit gates and required pre-commit checks separately from general statements withholding standing authority; use the current task to determine authorized local completion. At the end, compare owned changes with this baseline without treating other agents' changes as cleanup work.
+
 For an existing hook or check that touches version control, establish its configured entry point, trigger, scope, mutations, and approval boundary. A similarly named helper or unused configuration is not evidence of an active workflow. Do not assume a CI command is an agent completion verifier.
 
 Summarize only findings that affect the change. A compact table can distinguish existing mechanism, compatibility problem, minimal adaptation, and unresolved decision. If verification hooks or a completion verifier are absent, leave them absent. Create lightweight lane-assignment reminder hooks even when no hooks existed previously; this does not authorize new verification automation.

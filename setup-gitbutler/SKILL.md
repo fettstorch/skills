@@ -11,13 +11,18 @@ Make the existing project GitButler compatible. Preserve its workflows, supporte
 Create lightweight hooks that remind agents to inspect remaining uncommitted changes and assign only their own files or hunks to their resolved lane. Reuse suitable existing reminder hooks or add the smallest supported hook when none exists. These hooks must not build, typecheck, lint, test, invoke a verifier, or gate completion on verification results.
 
 Do not create ownership registries or claim/pause/resume CLIs, command guards, verification pipelines, repair daemons, reservations, or automatic repair tasks. New verification hooks are outside this skill's scope. Adapt existing verification hooks only when necessary for GitButler compatibility.
+
 ## Discover only what affects compatibility
 
 Read [references/discovery-and-interview.md](references/discovery-and-interview.md). Inspect project instructions, current version-control state, local skills, supported harness configuration, existing checks, and approval rules. Inspect supported reminder events and existing hook registrations. An absent reminder hook may be added for lane assignment; an absent verification hook or canonical completion verifier must remain absent.
 
 Support the harnesses already established by repository evidence without asking whether to keep supporting them. Do not ask rhetorical confirmation questions about preserving workflows or running appropriate existing checks. Ask only when a material ambiguity cannot be resolved from the project or the user's request; continue independent work meanwhile.
 
-Use the project's existing version-control workflow for this task. Read its local GitButler skill when present and inspect `but` state before lane changes. When the project uses a dedicated `setup-gitbutler` lane, reuse it and keep setup changes separate and unmerged. If establishing that lane is part of the requested setup, create it using supported GitButler commands. Do not reorganize unrelated lanes or assume this skill authorizes commits contrary to an existing approval gate.
+Use the project's existing version-control workflow for this task. Read its local GitButler skill when present and inspect `but` state before lane changes. The dedicated setup branch is named exactly `setup-gitbutler`, not `codex/setup-gitbutler`; this specific name takes precedence over a general branch prefix. Reuse the existing lane, or create it using supported GitButler commands when establishing it is part of the requested setup. Keep it separate and unmerged. Resolve an explicitly conflicting project arrangement before changing it; do not reorganize unrelated lanes.
+
+## Establish the actual workspace
+
+After loading the repository-local command skill (install locally as below if missing), ensure the shared checkout is actually on `gitbutler/workspace`. Creating a lane alone may leave an ordinary branch checked out. Inspect the installed CLI's help and use its supported workspace transition; for `but` 0.23.2, `but switch --workspace` is available. Verify the result with `git symbolic-ref --short HEAD` and inspect `but status` for the applied `setup-gitbutler` lane. Do not create a dummy second lane, use raw Git writes, or reinitialize GitButler to force this state. If the supported transition is blocked, report setup as incomplete with the precise blocker.
 
 ## Adapt the necessary surfaces
 
@@ -36,7 +41,9 @@ Do not run `but setup` to bypass `Setup required: unable to open database file`.
 
 Compatibility guidance, local skill discovery, and necessary database access are distinct from new policy. Setup does not grant standing authority for repair dispatch, conflict resolution, history rewrites, committing, or publication. Preserve the project's existing authorization for each action. Report conflicts with their lane/path evidence and follow the established repair workflow; do not install repair machinery.
 
-Where local commits are already authorized, inspect `but diff`, select exact owned file or hunk IDs, and explicitly target the resolved lane. Never sweep up unrelated work. Keep a separately maintained setup lane unmerged unless the user explicitly requests permanent integration. Do not push, publish, open a PR, or merge without explicit authorization.
+Determine local commit authority from the concrete task and existing project/workflow gates. A request to finish local setup can authorize its selective local commit under the ordinary project workflow; the absence of standing commit authority is not itself a no-commit gate. Do not infer commit authority for every invocation or override an explicit no-commit or later-approval gate. Resolve a material authorization ambiguity, but do not invent an extra approval step when the task already authorizes local completion.
+
+Where local commits are authorized, run required pre-commit checks, inspect `but diff`, select exact owned file or hunk IDs, and explicitly target `setup-gitbutler` (for example, `but commit -b setup-gitbutler -m "…" <owned-id> … --json --status-after`, when supported). Never sweep up unrelated work. If the installed CLI lacks standalone assignment, use the authorized selective commit rather than leaving changes behind; do not invent an assignment command or use retired `but rub`. An actual no-commit gate still applies: retain the owned changes for approval and report their paths and assignment state as an unfinished local step. Keep the setup lane unmerged unless the user explicitly requests permanent integration. Do not push, publish, open a PR, or merge without explicit authorization.
 
 ## Validate proportionately
 
@@ -44,4 +51,10 @@ Run appropriate existing checks for the changed surfaces: syntax checks and focu
 
 Inspect the final diff for scope, ownership, preserved approval boundaries, and cross-harness compatibility. Preserve both `disable-model-invocation: true` and Codex `policy.allow_implicit_invocation: false` for this manually invoked skill. A harness validator rejecting another harness's required metadata is a validator limitation, not permission to remove compatibility.
 
-Report what changed, which lane reminders were added or reused, which existing mechanisms needed migration (or that none did), checks actually run, and remaining access/runtime limitations. Distinguish file parsing from proven live harness behavior. Do not claim commits, lane state, or working integrations without evidence.
+Before reporting completion, establish these real postconditions:
+
+- `git symbolic-ref --short HEAD` reports `gitbutler/workspace`, and GitButler state shows the intended separate `setup-gitbutler` lane.
+- A fresh `but diff` accounts for every owned setup change: selectively committed when authorized, or assigned through a supported mechanism where the agreed workflow calls for uncommitted changes. No owned changes remain accidentally unassigned or uncommitted. Preserve unrelated changes; a globally clean shared checkout is not required.
+- Required checks passed, or their precise unresolved results are reported. Configuration parsing and script/fixture tests are distinct from actual workspace activation and from hooks being trusted and loaded live by each harness; report each only to the extent observed.
+
+Report what changed, lane/commit and remaining owned-change evidence, reminders added or reused, mechanisms migrated (or none), checks run, and access/runtime limitations. If a gate or blocker prevents a postcondition, call the setup incomplete and name the remaining step; do not label it finished merely because the files exist. Do not claim commits, lane state, or working integrations without evidence.

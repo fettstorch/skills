@@ -8,7 +8,7 @@ Record the intended command boundary in the repository's shared agent guidance o
 
 - allow routine read operations without repeated prompts;
 - allow creation of the explicitly resolved owned task lane because lane resolution before editing is part of the workflow;
-- permit selective `but commit` only where local commits are already authorized by the project;
+- permit selective `but commit` only where local commits are authorized by the concrete task and project/workflow policy; lack of standing authority is not itself an explicit no-commit gate;
 - require direct `but` invocation so native prefix rules can classify it;
 - keep push, PR creation, discard, undo, amend, squash, move, uncommit, resolve, apply/unapply, and other history or topology mutations outside the default allowlist;
 - state that permission to execute a command does not change user authorization requirements.

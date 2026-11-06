@@ -11,7 +11,9 @@ Before editing, inspect current lanes and resolve which lane owns the task. Reus
 
 Inspect `but diff` and select only your owned file or hunk IDs, explicitly targeting the resolved lane when committing. Preserve the project's existing commit timing and approval gates, including any no-commit gate in a workflow skill. Never broadly commit another agent's changes or mutate another task's lane.
 
-Keep GitButler-specific setup changes in the dedicated `setup-gitbutler` lane when that lane is used. Keep it separate and unmerged unless the user explicitly requests permanent integration. Report setup-lane conflicts and follow the project's existing repair process. This guidance does not authorize automatic repair tasks or history rewrites.
+Keep GitButler-specific setup changes in the dedicated `setup-gitbutler` lane; reuse it, and use that exact name rather than applying a general branch prefix. Keep it separate and unmerged unless the user explicitly requests permanent integration. Report setup-lane conflicts and follow the project's existing repair process. This guidance does not authorize automatic repair tasks or history rewrites.
+
+Before finishing, inspect `but diff` again and account for remaining owned changes under the concrete task's commit/assignment policy. Lack of standing commit authority is not an explicit no-commit gate; preserve actual gates and report any approval-blocked changes precisely. Never demand global cleanliness from the shared checkout.
 
 Run the project's existing checks as appropriate for your changes. Preserve existing hooks and verification behavior. Do not infer ownership from global dirty state, change another agent's work to clear a check, or require the shared workspace to be globally clean. Report failures you cannot safely attribute.
 
