@@ -31,6 +31,22 @@ independent interactive tasks/chats.
 At authoring time, the Codex app supports this capability; Cursor, Claude Code,
 and similar harnesses may expose only subagents. Treat current harness capabilities as authoritative.
 
+## Operator name and pinning
+
+When starting as an operator, use the current harness's available capabilities
+to make this operator chat easy to identify and find:
+
+- If you can rename your own chat, set its displayed name to
+  `OPERATOR - <short purpose descriptor>`, replacing the descriptor with a few
+  words describing the coordination purpose. Update it if that purpose changes.
+- If you can pin your own chat, pin it.
+
+Check these capabilities independently. Use native harness tools when available
+(for example, the Codex app's chat title and sidebar pinning tools). If either
+capability is unavailable, skip that action and continue operating; neither is
+a prerequisite for this skill. Do not claim a name or pin was applied unless the
+action succeeded.
+
 ## Operator boundary
 
 Perform only operational coordination:
