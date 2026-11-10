@@ -15,6 +15,8 @@ Record the intended command boundary in the repository's shared agent guidance o
 
 Do not create a redundant policy file when the repository's shared guidance already states this clearly.
 
+For repository-wide access, reuse one root adapter where the harness actually loads it for the intended working directories. Inspect effective root and child layers before removing duplicated GitButler permission entries. Preserve child-specific scopes, deny rules, and unrelated policy; sharing an adapter must not broaden access. Do not introduce a native adapter merely to achieve a uniform layout.
+
 ## Codex
 
 Codex project-local execution rules live in `.codex/rules/*.rules` and load only when the project `.codex` configuration layer is trusted. They cannot be relocated to `.agents`.

@@ -17,6 +17,8 @@ Before finishing, inspect `but diff` again and account for remaining owned chang
 
 Run the project's existing checks as appropriate for your changes. Preserve existing hooks and verification behavior. Do not infer ownership from global dirty state, change another agent's work to clear a check, or require the shared workspace to be globally clean. Report failures you cannot safely attribute.
 
+Keep shared GitButler reminder code once at the repository root with thin native harness registrations. Do not duplicate registrations in child projects that already inherit them. Judge duplication by event, responsibility, and effective scope: different events or a separate project verifier are not duplicate reminders. Preserve harness-specific contracts and child-specific configuration. Reminders stay stateless and separate from verification; they must not add automatic commits, edit tracking, or completion gates. Own only the GitButler setup hunks in shared configuration files so unapplying setup leaves existing project verification and agent configuration operational.
+
 Preserve approval boundaries for commits, conflict resolution, destructive operations, and external actions. Do not push, publish, create a PR, or merge without explicit authorization. GitButler access permissions do not grant action authorization.
 
 Reuse the repository-local GitButler skill; install only if missing or explicitly requested to refresh, using `but skill install --path [REPOSITORY-LOCAL-SKILL-PATH]`. Global installation is prohibited. Ignore the known missing-global-skill warning.
