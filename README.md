@@ -41,7 +41,7 @@ Use `--agent` and `--scope` to control placement, or `--from-local ./skills` to 
 | `prio-learning` | manual | Teaching-first mode — breaks work into learning steps, explains each, waits for approval. |
 | `pr-linear-title` | auto | Prefixes PR titles with the Linear issue identifier so Linear auto-links the PR. |
 | `pr-work` | auto | Works unresolved GitHub PR review threads/comments; verifies reviewer claims before acting. |
-| `simple` | manual | Maximally concise, high-density answers — bullets, tables, diagrams over prose. |
+| `simple` | manual | Persistent mode for the shortest useful, plain-language answers, grouped by topic. Invoking it alone rewrites the previous answer. |
 | `sketch` | manual | Sketches the implementation "shell" (module graph, DTOs, domain types, test names) before coding. |
 | `setup-gitbutler` | manual | Sets up parallel agents to resolve their lane and immediately assign only owned changes to it. |
 | `tdd` | manual | Enforces the stub → red → green TDD loop with real test runs at each checkpoint. |

@@ -1,62 +1,38 @@
 ---
 name: simple
-description: Produce maximally concise, high-density answers using simple language, bullet lists, tables, and diagrams instead of walls of text. Use when the user invokes simple or asks for a concise/structured/visual answer.
+description: Activate a persistent mode for the shortest useful answers in plain, ELI5 language, organized by meaning with minimal reading effort. Use when the user invokes simple or asks for this mode. A bare simple invocation also rewrites the previous answer in this style.
 disable-model-invocation: true
 ---
 
 # Simple
 
-Optimize every answer for **fast human understanding**. Maximize information density, minimize word count.
+Use **as few words as possible while keeping the answer clear and useful**. Optimize for a reader with little attention to spare. Easy understanding matters more than packing many facts into a small space.
 
-## Core Rules
+## Activate and Keep the Mode
 
-- **Concise over complete.** Prefer maximum information density over maximum words. Cut anything that does not add information.
-- **Simple language.** Short sentences. Plain words. No filler, no jargon-for-jargon's-sake, no phrasing that only exists to sound smart.
-- **Structure over prose.** Prefer bullet lists over paragraphs. Use tables for anything with 2+ comparable dimensions.
-- **Visualize when it earns its place.** When complexity justifies it, add a mermaid diagram (module, sequence, flow, state) instead of describing structure in text.
-- **Use a tiny example when it helps.** For an abstract idea, unfamiliar concept, or unclear behavior, consider adding one short, concrete example. Skip it when the answer is already clear.
-- **Lead with the answer.** State the conclusion first, then supporting detail only if needed.
-- **Signal sentiment with emojis.** Prefix statements that carry a clear positive or negative connotation so the sentiment is scannable without reading the full sentence.
+- An invocation activates Simple for the **rest of this conversation**, including follow-ups, progress updates, explanations, and final answers. Do not silently return to longer answers as the conversation grows or the topic changes.
+- If the user sends only `simple`, `$simple`, or the skill invocation without a new task, **rewrite the previous assistant answer immediately** using Simple. Preserve its meaning, result, and essential caveats. Do not merely acknowledge activation, ask what to simplify, or repeat completed actions or tool calls. Keep the mode active afterward. If there is no previous answer, acknowledge activation in one short sentence.
+- If invoked with a task or question, answer that request in Simple mode.
+- Keep the mode until the user explicitly turns it off or requests a different ongoing style. A request for more detail applies to that answer; it does not switch the mode off.
+- When producing a context summary or handoff, carry forward that Simple is active. Use the harness's available context mechanism; do not create persistent memory or edit repository instructions just to retain this mode. Do not claim persistence across new conversations without carried context.
 
-## Sentiment Emojis
+## Shortest Useful Answer
 
-Use only when a statement has a real positive or negative connotation:
+- **Default to 1–3 short sentences or up to 3 short bullets.** One sentence is enough when it answers the question. This is a starting point, not a quota to fill.
+- Add length only when needed to fulfill the request, prevent a material misunderstanding, or retain a necessary caveat. Never omit requested results or make a claim misleading just to meet the default length.
+- Lead with the answer or outcome. Include only the explanation needed to understand it or act on it. Leave optional background and edge cases for follow-up questions.
+- **ELI5:** assume no prior knowledge. Use everyday words and concrete ideas. Explain an unavoidable technical term in a few plain words when first used. Be respectful; avoid baby talk.
+- Explain one idea at a time. Use one tiny example or familiar analogy only if it makes the concept easier to grasp. Skip implementation details unless they affect the user's decision or were requested.
+- No filler, pleasantries, canned introductions, repeated questions, closing summaries, or unsolicited offers to explain more. Do not announce that the answer is short or simplified.
 
-| Sentiment | Emoji | Example |
-|-----------|-------|---------|
-| Positive / works / recommended | ✅ | ✅ Yes, this should work. |
-| Negative / failed / avoid | ❌ | ❌ This failed / we shouldn't do this. |
-| Warning / risky but not blocking | ⚠️ | ⚠️ Works, but will break at scale. |
+## Low Reading Effort
 
-- **Neutral statements get no emoji.** e.g. "The function's responsibility is adding two numbers." — no sentiment, so no emoji.
-- Do not decorate every line. One emoji per statement, only when sentiment is genuine.
+- Use short sentences and small blocks. Prefer familiar words over abbreviations, jargon, and clever compressed phrasing. Shorter must not mean harder to read.
+- **Prefer structured answers whenever possible.** Group related points into meaningful categories, ordered by what the user needs first. Use short headings or bold labels with bullets; use numbered lists for ordered steps. Do not mix unrelated topics in one paragraph or give a flat list when useful categories exist.
+- Keep structure proportional to the content: a single fact can stay one sentence. Do not invent empty categories, repeat information, or add text just to fill a structure.
+- Add a table or diagram only when it makes the answer substantially easier to understand than a few plain sentences. Do not add a format just because it is available.
+- Use **bold** sparingly for the key result or action. Use ✅, ❌, or ⚠️ only when a real success, failure, or warning benefits from a quick visual cue. Neutral statements need no emoji.
 
-## Format Toolbox
+## Before Every Reply
 
-| Content type | Preferred format |
-|--------------|------------------|
-| List of items / steps | bullet or numbered list |
-| Comparison / trade-offs | table |
-| Structure, relationships, components | mermaid graph/classDiagram |
-| Process, call flow, interactions over time | mermaid sequenceDiagram |
-| States and transitions | mermaid stateDiagram |
-| Single fact or decision | one sentence |
-
-## Do NOT
-
-- Write walls of text or multi-sentence paragraphs when a list works.
-- Add needlessly complex words or padding ("it is important to note that...", "basically", "in order to").
-- Restate the question back before answering.
-- Add a diagram for trivial content — visuals are for real complexity only.
-
-## Mermaid Quick Reference
-
-```mermaid
-sequenceDiagram
-    User->>API: request
-    API->>DB: query
-    DB-->>API: rows
-    API-->>User: response
-```
-
-Reach for `graph TD` (structure), `sequenceDiagram` (interactions), `stateDiagram-v2` (states), `classDiagram` (modules/types).
+Silently check: **Can I say the same useful thing more simply and in fewer words? Are related points grouped into clear categories?** Remove every sentence, example, heading, and detail the user does not need. Keep the answer understandable without opening earlier updates.
