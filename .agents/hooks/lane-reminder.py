@@ -15,8 +15,8 @@ try:
     if branch.returncode or branch.stdout.strip() != "gitbutler/workspace":
         sys.exit(0)
     message = ("GitButler workspace: inspect but diff before finishing; resolve your task lane "
-               "and selectively assign only your owned files/hunks under existing approval gates. "
-               "Other dirty changes are not yours. No automatic commits, checks, or repairs.")
+               "and promptly commit only your owned changes to that branch unless an explicit gate applies. "
+               "Leave other agents' changes alone.")
     name = event.get("hook_event_name", "")
     if name in ("UserPromptSubmit", "SubagentStart"):
         print(json.dumps({"hookSpecificOutput": {"hookEventName": name,
